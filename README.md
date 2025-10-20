@@ -1,4 +1,4 @@
-### Chạy ví dụ sau: https://spring.io/guides/topicals/spring-on-kubernetes
+# Chạy ví dụ sau: https://spring.io/guides/topicals/spring-on-kubernetes
 
 ## Kubectl get all
 ---
@@ -8,7 +8,7 @@
 ---
 <img width="649" height="100" alt="Screenshot 2025-10-20 111531" src="https://github.com/user-attachments/assets/8c6e593c-4e52-46b5-adae-fb88dffe3747" />
 
-### Triển khai ứng dụng web + mysql (bài tuần trước) trên nền tảng K8s
+# Triển khai ứng dụng web + mysql (bài tuần trước) trên nền tảng K8s
 
 <img width="970" height="140" alt="Screenshot 2025-10-20 125855" src="https://github.com/user-attachments/assets/144a6b6f-969e-4630-bc4e-5fc850e73029" />
 
