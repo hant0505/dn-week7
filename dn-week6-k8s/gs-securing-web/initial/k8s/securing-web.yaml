@@ -1,0 +1,72 @@
+# ============ APP DEPLOYMENT ============
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: securing-web-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: securing-web
+  template:
+    metadata:
+      labels:
+        app: securing-web
+    spec:
+      initContainers:
+      - name: wait-for-mysql
+        image: busybox:1.28
+        command: ['sh', '-c', 'until nc -z mysql-db 3306; do echo waiting for mysql; sleep 2; done;']
+      containers:
+      - name: securing-web
+        image: spring-k8s/securing-web:latest
+        imagePullPolicy: Never
+        ports:
+        - containerPort: 8085
+        env:
+        - name: SPRING_DATASOURCE_URL
+          value: "jdbc:mysql://mysql-db:3306/week2"
+        - name: SPRING_DATASOURCE_USERNAME
+          value: "root"
+        - name: SPRING_DATASOURCE_PASSWORD
+          value: "Thu ha123"
+        - name: SPRING_JPA_HIBERNATE_DDL_AUTO
+          value: "update"
+        - name: SPRING_JPA_SHOW_SQL
+          value: "true"
+        - name: SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT
+          value: "org.hibernate.dialect.MySQLDialect"
+        livenessProbe:
+          httpGet:
+            path: /login
+            port: 8085
+          initialDelaySeconds: 30
+          periodSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /login
+            port: 8085
+          initialDelaySeconds: 20
+          periodSeconds: 5
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "250m"
+          limits:
+            memory: "512Mi"
+            cpu: "500m"
+
+# ============ APP SERVICE ============
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: securing-web-service
+spec:
+  type: LoadBalancer
+  selector:
+    app: securing-web
+  ports:
+    - port: 8085
+      targetPort: 8085
+      protocol: TCP
